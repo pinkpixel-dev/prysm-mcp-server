@@ -1,0 +1,12 @@
+src/
+tsconfig.json
+tsup.config.ts
+.github/
+jest.config.js
+.vscode/
+*.test.ts
+node_modules/
+.cursor/
+npm-debug.log
+*.tsbuildinfo 
+.cursorrules

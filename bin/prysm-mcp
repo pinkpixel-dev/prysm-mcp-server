@@ -1,0 +1,19 @@
+#!/usr/bin/env node
+
+// This is a wrapper script that runs the ESM module
+import { fileURLToPath } from 'url';
+import { dirname, resolve } from 'path';
+import { createRequire } from 'module';
+
+// Get the directory where this file is located
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// Import the main module
+const mainModulePath = resolve(__dirname, '../dist/index.js');
+
+// Dynamic import the module
+import(mainModulePath).catch(err => {
+  console.error('Error starting the MCP server:', err);
+  process.exit(1);
+}); 

@@ -1,0 +1,28 @@
+{
+  "mcpServers": {
+    "prysm-scraper-local": {
+      "description": "Use this for local development with a cloned repo",
+      "command": "node",
+      "args": [
+        "./dist/index.js"
+      ],
+      "cwd": "${workspaceFolder}"
+    },
+    "prysm-scraper-npx": {
+      "description": "Use this for the npm published package",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@pinkpixel/prysm-mcp"
+      ]
+    },
+    "prysm-scraper-with-output": {
+      "description": "Use this to specify a custom output directory",
+      "command": "sh",
+      "args": [
+        "-c",
+        "PRYSM_OUTPUT_DIR=\"${workspaceFolder}/scrape-output\" npx -y @pinkpixel/prysm-mcp"
+      ]
+    }
+  }
+} 
