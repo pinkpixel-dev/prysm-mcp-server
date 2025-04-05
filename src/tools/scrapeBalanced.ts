@@ -1,6 +1,7 @@
 import type { ToolDefinition } from '../config.js';
 import { ScraperBaseParams, ScraperResponse } from '../types.js';
 import * as prysm from '@pinkpixel/prysm-llm';
+import { config } from '../config.js';
 
 // Define the tool
 export const scrapeBalanced: ToolDefinition = {
@@ -47,6 +48,10 @@ export const scrapeBalanced: ToolDefinition = {
       },
       output: {
         type: 'string',
+        description: 'Output directory for general results'
+      },
+      imageOutput: {
+        type: 'string',
         description: 'Output directory for downloaded images'
       }
     },
@@ -54,7 +59,8 @@ export const scrapeBalanced: ToolDefinition = {
   },
   handler: async (params: ScraperBaseParams & { timeout?: number }): Promise<ScraperResponse> => {
     const { url, maxScrolls = 10, scrollDelay = 2000, pages = 1, scrapeImages = false, 
-            downloadImages = false, maxImages = 50, minImageSize = 100, timeout = 30000, output } = params;
+            downloadImages = false, maxImages = 50, minImageSize = 100, timeout = 30000, 
+            output, imageOutput } = params;
     
     try {
       // Create options object for the scraper
@@ -70,7 +76,8 @@ export const scrapeBalanced: ToolDefinition = {
         maxImages,
         minImageSize,
         timeout, // Add timeout option
-        output // Add output directory parameter
+        output: output || config.serverOptions.defaultOutputDir, // Use configured default if not provided
+        imageOutput: imageOutput || config.serverOptions.defaultImageOutputDir // Use configured default if not provided
       };
       
       // Create a promise with timeout

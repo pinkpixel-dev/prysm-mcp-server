@@ -58,7 +58,11 @@ Here's a more comprehensive configuration with multiple options:
       "args": [
         "./dist/index.js"
       ],
-      "cwd": "${workspaceFolder}/path/to/prysm-mcp"
+      "cwd": "${workspaceFolder}/path/to/prysm-mcp",
+      "env": {
+        "PRYSM_OUTPUT_DIR": "${workspaceFolder}/scrape_results",
+        "PRYSM_IMAGE_OUTPUT_DIR": "${workspaceFolder}/scrape_results/images"
+      }
     },
     "prysm-scraper-npx": {
       "description": "Use this for the npm published package",
@@ -66,44 +70,54 @@ Here's a more comprehensive configuration with multiple options:
       "args": [
         "-y",
         "@pinkpixel/prysm-mcp"
-      ]
+      ],
+      "env": {
+        "PRYSM_OUTPUT_DIR": "${workspaceFolder}/scrape_results",
+        "PRYSM_IMAGE_OUTPUT_DIR": "${workspaceFolder}/scrape_results/images"
+      }
     },
     "prysm-scraper-with-output": {
       "description": "Use this to specify a custom output directory",
-      "command": "sh",
+      "command": "npx",
       "args": [
-        "-c",
-        "PRYSM_OUTPUT_DIR=\"${workspaceFolder}/scrape-output\" npx -y @pinkpixel/prysm-mcp"
-      ]
+        "-y",
+        "@pinkpixel/prysm-mcp"
+      ],
+      "env": {
+        "PRYSM_OUTPUT_DIR": "${workspaceFolder}/scrape_results"
+      }
     }
   }
 }
 ```
 
 This configuration provides three different server setups:
-1. **Local Development**: Uses a local cloned repository
-2. **NPX Standard**: Uses the published npm package directly
-3. **Custom Output**: Uses the published package with a custom output directory
+1. **Local Development**: Uses a local cloned repository with custom output directories
+2. **NPX Standard**: Uses the published npm package directly with custom output directories
+3. **Custom Output**: Uses the published package with just a custom general output directory
 
 ## ⚙️ Environment Configuration
 
-You can customize where formatted results are saved by setting the `PRYSM_OUTPUT_DIR` environment variable before starting Cursor:
+You can customize where results are saved by setting environment variables before starting Cursor:
 
 ```bash
 # Linux/macOS
 export PRYSM_OUTPUT_DIR="/path/to/custom/directory"
+export PRYSM_IMAGE_OUTPUT_DIR="/path/to/custom/image/directory"
 # Then start Cursor
 
 # Windows (Command Prompt)
 set PRYSM_OUTPUT_DIR=C:\path\to\custom\directory
+set PRYSM_IMAGE_OUTPUT_DIR=C:\path\to\custom\image\directory
 # Then start Cursor
 
 # Windows (PowerShell)
 $env:PRYSM_OUTPUT_DIR="C:\path\to\custom\directory"
+$env:PRYSM_IMAGE_OUTPUT_DIR="C:\path\to\custom\image\directory"
 # Then start Cursor
 ```
 
-By default, files will be saved to `~/prysm-mcp/output/`.
+By default, general results will be saved to `~/prysm-mcp/output/` and images to `~/prysm-mcp/output/images/`.
 
 ## 🚀 Available Tools
 

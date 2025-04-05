@@ -51,60 +51,54 @@ Edit this file to add the Prysm MCP Server:
 
 ### Advanced Configuration
 
-Here's a more comprehensive configuration with multiple options:
+You can specify additional options when configuring Claude Desktop to use the Prysm MCP server:
 
 ```json
 {
-  "mcpServers": {
-    "prysm-scraper-basic": {
-      "description": "Basic web scraper with default settings",
-      "command": "npx",
-      "args": [
-        "-y",
-        "@pinkpixel/prysm-mcp"
-      ]
-    },
-    "prysm-scraper-with-output": {
-      "description": "Web scraper with custom output directory",
-      "command": "sh",
-      "args": [
-        "-c",
-        "PRYSM_OUTPUT_DIR=\"$HOME/prysm-results\" npx -y @pinkpixel/prysm-mcp"
-      ]
-    },
-    "prysm-local-dev": {
-      "description": "For local development with cloned repo",
-      "command": "node",
-      "args": [
-        "./dist/index.js"
-      ],
-      "cwd": "/path/to/local/prysm-mcp"
-    }
+  "name": "Prysm Web Scraper",
+  "transport": "stdio",
+  "command": "npx",
+  "args": ["-y", "@pinkpixel/prysm-mcp"],
+  "env": {
+    "PRYSM_OUTPUT_DIR": "$HOME/prysm-results",
+    "PRYSM_IMAGE_OUTPUT_DIR": "$HOME/prysm-results/images"
   }
 }
 ```
 
-After updating the configuration, restart Claude Desktop for the changes to take effect.
+You can also use a shell command for more complex configurations:
+
+```json
+{
+  "name": "Prysm Web Scraper",
+  "transport": "stdio",
+  "command": "bash",
+  "args": ["-c", "cd ~/my-projects/prysm && node dist/index.js"]
+}
+```
 
 ## ⚙️ Environment Configuration
 
-You can customize where formatted results are saved by setting the `PRYSM_OUTPUT_DIR` environment variable before starting Claude Desktop:
+You can customize where results are saved by setting environment variables before starting Claude Desktop:
 
 ```bash
 # Linux/macOS
 export PRYSM_OUTPUT_DIR="/path/to/custom/directory"
+export PRYSM_IMAGE_OUTPUT_DIR="/path/to/custom/image/directory"
 # Then start Claude Desktop
 
 # Windows (Command Prompt)
 set PRYSM_OUTPUT_DIR=C:\path\to\custom\directory
+set PRYSM_IMAGE_OUTPUT_DIR=C:\path\to\custom\image\directory
 # Then start Claude Desktop
 
 # Windows (PowerShell)
 $env:PRYSM_OUTPUT_DIR="C:\path\to\custom\directory"
+$env:PRYSM_IMAGE_OUTPUT_DIR="C:\path\to\custom\image\directory"
 # Then start Claude Desktop
 ```
 
-By default, files will be saved to `~/prysm-mcp/output/`.
+By default, general results will be saved to `~/prysm-mcp/output/` and images to `~/prysm-mcp/output/images/`.
 
 ## 🚀 Available Tools
 

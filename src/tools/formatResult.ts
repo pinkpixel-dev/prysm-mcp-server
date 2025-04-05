@@ -4,38 +4,53 @@ import * as prysm from '@pinkpixel/prysm-llm';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { config } from '../config.js';
+import json2md from 'json2md';
 
-// Helper function to format scraped data as markdown
+// Helper function to format scraped data as markdown using json2md
 function formatAsMarkdown(data: ScraperResponse, includeImages: boolean): string {
-  let markdown = `# ${data.title}\n\n`;
+  const mdData: json2md.DataObject[] = [];
+  
+  // Add title
+  mdData.push({ h1: data.title });
   
   // Add metadata if available
   if (data.metadata && Object.keys(data.metadata).length > 0) {
-    markdown += '## Metadata\n\n';
+    mdData.push({ h2: 'Metadata' });
+    
+    const metadataItems: string[] = [];
     for (const [key, value] of Object.entries(data.metadata)) {
-      if (typeof value === 'string' || typeof value === 'number') {
-        markdown += `- **${key}**: ${value}\n`;
+      if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+        metadataItems.push(`**${key}**: ${value}`);
       }
     }
-    markdown += '\n';
+    
+    if (metadataItems.length > 0) {
+      mdData.push({ ul: metadataItems });
+    }
   }
   
   // Add content
-  markdown += '## Content\n\n';
-  for (const section of data.content) {
-    markdown += `${section}\n\n`;
+  mdData.push({ h2: 'Content' });
+  if (data.content && data.content.length > 0) {
+    data.content.forEach(section => {
+      mdData.push({ p: section });
+    });
   }
   
   // Add images if requested and available
   if (includeImages && data.images && data.images.length > 0) {
-    markdown += '## Images\n\n';
-    for (const image of data.images) {
+    mdData.push({ h2: 'Images' });
+    
+    data.images.forEach(image => {
       const alt = image.alt || 'Image';
-      markdown += `![${alt}](${image.url})\n\n`;
-    }
+      mdData.push({ img: { 
+        title: alt,
+        source: image.url 
+      }});
+    });
   }
   
-  return markdown;
+  return json2md(mdData);
 }
 
 // Helper function to format scraped data as HTML
@@ -177,6 +192,11 @@ export const formatResult: ToolDefinition = {
         // Save to default location if no output specified but we have a default dir
         const defaultFilename = generateDefaultFilename(data, format);
         savedTo = await saveToFile(formatted, defaultFilename, format, data);
+      }
+      
+      // For large JSON data, truncate the response to avoid overwhelming the LLM
+      if (format === 'json' && formatted.length > 10000) {
+        formatted = formatted.substring(0, 10000) + '... (truncated for display, full content saved to file)';
       }
       
       return {

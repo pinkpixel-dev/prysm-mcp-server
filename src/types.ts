@@ -9,6 +9,7 @@ export interface ScraperBaseParams {
   maxImages?: number;
   minImageSize?: number;
   output?: string;  // Output directory for saving scrape results
+  imageOutput?: string;  // Output directory for saving image results
 }
 
 // Scraper tool response interface

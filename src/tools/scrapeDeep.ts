@@ -1,6 +1,7 @@
 import type { ToolDefinition } from '../config.js';
 import { ScraperBaseParams, ScraperResponse } from '../types.js';
 import * as prysm from '@pinkpixel/prysm-llm';
+import { config } from '../config.js';
 
 // Define the tool
 export const scrapeDeep: ToolDefinition = {
@@ -43,6 +44,10 @@ export const scrapeDeep: ToolDefinition = {
       },
       output: {
         type: 'string',
+        description: 'Output directory for general results'
+      },
+      imageOutput: {
+        type: 'string',
         description: 'Output directory for downloaded images'
       }
     },
@@ -50,7 +55,7 @@ export const scrapeDeep: ToolDefinition = {
   },
   handler: async (params: ScraperBaseParams): Promise<ScraperResponse> => {
     const { url, maxScrolls = 20, scrollDelay = 3000, pages = 1, scrapeImages = false, 
-            downloadImages = false, maxImages = 100, minImageSize = 100, output } = params;
+            downloadImages = false, maxImages = 100, minImageSize = 100, output, imageOutput } = params;
     
     try {
       // Create options object for the scraper
@@ -65,15 +70,48 @@ export const scrapeDeep: ToolDefinition = {
         downloadImages,
         maxImages,
         minImageSize,
-        output
+        output: output || config.serverOptions.defaultOutputDir, // Use configured default if not provided
+        imageOutput: imageOutput || config.serverOptions.defaultImageOutputDir // Use configured default if not provided
       };
       
-      // Call the Prysm scraper
-      const result = await prysm.scrape(url, options);
+      const result = await prysm.scrape(url, options) as ScraperResponse;
+      
+      // Limit content size to prevent overwhelming the MCP client
+      if (result.content && result.content.length > 0) {
+        // Limit the number of content sections
+        if (result.content.length > 30) {
+          result.content = result.content.slice(0, 30);
+          result.content.push("(Content truncated due to size limitations)");
+        }
+        
+        // Limit the size of each content section
+        result.content = result.content.map(section => {
+          if (section.length > 10000) {
+            return section.substring(0, 10000) + "... (truncated)";
+          }
+          return section;
+        });
+      }
+      
+      // Limit the number of images to return
+      if (result.images && result.images.length > 30) {
+        result.images = result.images.slice(0, 30);
+      }
       
       return result;
     } catch (error) {
-      throw new Error(`Failed to scrape ${url}: ${error instanceof Error ? error.message : String(error)}`);
+      console.error(`Error scraping ${url}:`, error);
+      // Return a proper error format for MCP
+      return {
+        title: "Scraping Error",
+        content: [`Failed to scrape ${url}: ${error instanceof Error ? error.message : String(error)}`],
+        images: [],
+        metadata: { error: true },
+        url: url,
+        structureType: "error",
+        paginationType: "none",
+        extractionMethod: "none"
+      };
     }
   }
 }; 

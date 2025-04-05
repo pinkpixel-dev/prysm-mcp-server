@@ -52,48 +52,17 @@ Create a `mcp.json` file in the appropriate location according to the above guid
 ```json
 {
   "mcpServers": {
-    "prysm-scraper-npx": {
-      "description": "Prysm web scraper using npm package",
+    "prysm-scraper": {
+      "description": "Prysm web scraper with custom output directories",
       "command": "npx",
       "args": [
         "-y",
         "@pinkpixel/prysm-mcp"
-      ]
-    }
-  }
-}
-```
-
-#### Advanced Configuration Options
-
-Here's a more comprehensive `mcp.json` with multiple configuration options:
-
-```json
-{
-  "mcpServers": {
-    "prysm-scraper-local": {
-      "description": "Use this for local development with a cloned repo",
-      "command": "node",
-      "args": [
-        "./dist/index.js"
       ],
-      "cwd": "${workspaceFolder}/path/to/prysm-mcp"
-    },
-    "prysm-scraper-npx": {
-      "description": "Use this for the npm published package",
-      "command": "npx",
-      "args": [
-        "-y",
-        "@pinkpixel/prysm-mcp"
-      ]
-    },
-    "prysm-scraper-with-output": {
-      "description": "Use this to specify a custom output directory",
-      "command": "sh",
-      "args": [
-        "-c",
-        "PRYSM_OUTPUT_DIR=\"${workspaceFolder}/scrape-output\" npx -y @pinkpixel/prysm-mcp"
-      ]
+      "env": {
+        "PRYSM_OUTPUT_DIR": "${workspaceFolder}/scrape_results",
+        "PRYSM_IMAGE_OUTPUT_DIR": "${workspaceFolder}/scrape_results/images"
+      }
     }
   }
 }
@@ -174,24 +143,50 @@ Format the scraped data as markdown and save it to "my-results/output.md"
 
 By default, when saving formatted results, files will be saved to `~/prysm-mcp/output/`. You can customize this in two ways:
 
-1. **Environment Variable**: Set `PRYSM_OUTPUT_DIR` to your preferred directory:
+1. **Environment Variables**: Set environment variables to your preferred directories:
 
 ```bash
 # Linux/macOS
 export PRYSM_OUTPUT_DIR="/path/to/custom/directory"
+export PRYSM_IMAGE_OUTPUT_DIR="/path/to/custom/image/directory"
 
 # Windows (Command Prompt)
 set PRYSM_OUTPUT_DIR=C:\path\to\custom\directory
+set PRYSM_IMAGE_OUTPUT_DIR=C:\path\to\custom\image\directory
 
 # Windows (PowerShell)
 $env:PRYSM_OUTPUT_DIR="C:\path\to\custom\directory"
+$env:PRYSM_IMAGE_OUTPUT_DIR="C:\path\to\custom\image\directory"
 ```
 
-2. **Tool Parameter**: Specify an output path directly when calling `formatResult`:
+2. **Tool Parameter**: Specify output paths directly when calling the tools:
 
 ```
+# For general results
 Format the scraped data as markdown and save it to "/absolute/path/to/file.md"
+
+# For image downloads when scraping
+Please scrape https://example.com and download images to "/absolute/path/to/images"
 ```
+
+3. **MCP Configuration**: In your MCP configuration file (e.g., `.cursor/mcp.json`), you can set these environment variables:
+
+```json
+{
+  "mcpServers": {
+    "prysm-scraper": {
+      "command": "npx",
+      "args": ["-y", "@pinkpixel/prysm-mcp"],
+      "env": {
+        "PRYSM_OUTPUT_DIR": "${workspaceFolder}/scrape_results",
+        "PRYSM_IMAGE_OUTPUT_DIR": "${workspaceFolder}/scrape_results/images"
+      }
+    }
+  }
+}
+```
+
+If `PRYSM_IMAGE_OUTPUT_DIR` is not specified, it will default to a subfolder named `images` inside the `PRYSM_OUTPUT_DIR`.
 
 If you provide only a relative path or filename, it will be saved relative to the configured output directory.
 
@@ -219,8 +214,8 @@ node bin/prysm-mcp
 # Debug MCP communication
 DEBUG=mcp:* node bin/prysm-mcp
 
-# Set custom output directory
-PRYSM_OUTPUT_DIR=./my-output node bin/prysm-mcp
+# Set custom output directories
+PRYSM_OUTPUT_DIR=./my-output PRYSM_IMAGE_OUTPUT_DIR=./my-output/images node bin/prysm-mcp
 ```
 
 ### Running via npx
@@ -231,8 +226,8 @@ You can run the server directly with npx without installing:
 # Run with default settings
 npx @pinkpixel/prysm-mcp
 
-# Run with custom output directory
-PRYSM_OUTPUT_DIR=./my-output npx @pinkpixel/prysm-mcp
+# Run with custom output directories
+PRYSM_OUTPUT_DIR=./my-output PRYSM_IMAGE_OUTPUT_DIR=./my-output/images npx @pinkpixel/prysm-mcp
 ```
 
 ## 📋 License

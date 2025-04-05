@@ -70,27 +70,72 @@ Here's a more comprehensive configuration with multiple options:
 }
 ```
 
-After updating the configuration, restart Roo Code for the changes to take effect.
+### Custom Configuration
+
+You can create a custom configuration file for the Prysm MCP Server with Roo Code. Create a JSON file with the following content:
+
+```json
+{
+  "mcpServers": {
+    "prysm-scraper": {
+      "command": "npx",
+      "args": ["-y", "@pinkpixel/prysm-mcp"],
+      "env": {
+        "PRYSM_OUTPUT_DIR": "$HOME/roo-scrape-results",
+        "PRYSM_IMAGE_OUTPUT_DIR": "$HOME/roo-scrape-results/images"
+      }
+    }
+  }
+}
+```
+
+For a more complex setup with multiple configurations:
+
+```json
+{
+  "mcpServers": {
+    "prysm-standard": {
+      "description": "Standard web scraping with default settings",
+      "command": "npx",
+      "args": ["-y", "@pinkpixel/prysm-mcp"]
+    },
+    "prysm-with-output": {
+      "description": "Web scraping with custom output directory",
+      "command": "npx",
+      "args": ["-y", "@pinkpixel/prysm-mcp"],
+      "env": {
+        "PRYSM_OUTPUT_DIR": "$HOME/roo-scrape-results",
+        "PRYSM_IMAGE_OUTPUT_DIR": "$HOME/roo-scrape-results/images"
+      }
+    }
+  }
+}
+```
+
+After creating this file, import it through the Roo Code MCP settings interface.
 
 ## ⚙️ Environment Configuration
 
-You can customize where formatted results are saved by setting the `PRYSM_OUTPUT_DIR` environment variable before starting Roo Code:
+You can customize where results are saved by setting environment variables before starting Roo Code:
 
 ```bash
 # Linux/macOS
 export PRYSM_OUTPUT_DIR="/path/to/custom/directory"
+export PRYSM_IMAGE_OUTPUT_DIR="/path/to/custom/image/directory"
 # Then start Roo Code
 
 # Windows (Command Prompt)
 set PRYSM_OUTPUT_DIR=C:\path\to\custom\directory
+set PRYSM_IMAGE_OUTPUT_DIR=C:\path\to\custom\image\directory
 # Then start Roo Code
 
 # Windows (PowerShell)
 $env:PRYSM_OUTPUT_DIR="C:\path\to\custom\directory"
+$env:PRYSM_IMAGE_OUTPUT_DIR="C:\path\to\custom\image\directory"
 # Then start Roo Code
 ```
 
-By default, files will be saved to `~/prysm-mcp/output/`.
+By default, general results will be saved to `~/prysm-mcp/output/` and images to `~/prysm-mcp/output/images/`.
 
 ## 🚀 Available Tools
 

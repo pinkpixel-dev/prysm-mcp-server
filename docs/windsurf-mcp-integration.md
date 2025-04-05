@@ -78,25 +78,72 @@ Here's a more comprehensive configuration with multiple options:
 
 After updating the configuration, be sure to press the refresh button in the Windsurf settings.
 
+## 🛠️ Custom Configuration
+
+You can create a custom configuration file to add the Prysm MCP Server to Windsurf. Create a file named `mcp.json` in your home directory's `.windsurf` folder:
+
+```json
+{
+  "mcpServers": {
+    "prysm-scraper": {
+      "command": "npx",
+      "args": ["-y", "@pinkpixel/prysm-mcp"],
+      "env": {
+        "PRYSM_OUTPUT_DIR": "$HOME/windsurf/scraped-content",
+        "PRYSM_IMAGE_OUTPUT_DIR": "$HOME/windsurf/scraped-content/images"
+      }
+    }
+  }
+}
+```
+
+For a more complex setup with multiple configurations:
+
+```json
+{
+  "mcpServers": {
+    "prysm-scraper-standard": {
+      "description": "Standard web scraping with default settings",
+      "command": "npx",
+      "args": ["-y", "@pinkpixel/prysm-mcp"]
+    },
+    "prysm-scraper-with-output": {
+      "description": "Web scraping with custom output directory",
+      "command": "npx",
+      "args": ["-y", "@pinkpixel/prysm-mcp"],
+      "env": {
+        "PRYSM_OUTPUT_DIR": "/custom/output/directory",
+        "PRYSM_IMAGE_OUTPUT_DIR": "/custom/output/directory/images"
+      }
+    }
+  }
+}
+```
+
+After saving this file, restart Windsurf for the changes to take effect.
+
 ## ⚙️ Environment Configuration
 
-You can customize where formatted results are saved by setting the `PRYSM_OUTPUT_DIR` environment variable before starting Windsurf:
+You can customize where results are saved by setting environment variables before starting Windsurf:
 
 ```bash
 # Linux/macOS
 export PRYSM_OUTPUT_DIR="/path/to/custom/directory"
+export PRYSM_IMAGE_OUTPUT_DIR="/path/to/custom/image/directory"
 # Then start Windsurf
 
 # Windows (Command Prompt)
 set PRYSM_OUTPUT_DIR=C:\path\to\custom\directory
+set PRYSM_IMAGE_OUTPUT_DIR=C:\path\to\custom\image\directory
 # Then start Windsurf
 
 # Windows (PowerShell)
 $env:PRYSM_OUTPUT_DIR="C:\path\to\custom\directory"
+$env:PRYSM_IMAGE_OUTPUT_DIR="C:\path\to\custom\image\directory"
 # Then start Windsurf
 ```
 
-By default, files will be saved to `~/prysm-mcp/output/`.
+By default, general results will be saved to `~/prysm-mcp/output/` and images to `~/prysm-mcp/output/images/`.
 
 ## 🚀 Available Tools
 

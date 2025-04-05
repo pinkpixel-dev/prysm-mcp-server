@@ -23,6 +23,7 @@ interface ServerConfig {
   tools: ToolDefinition[];
   serverOptions: {
     defaultOutputDir: string;
+    defaultImageOutputDir: string;
   };
 }
 
@@ -41,18 +42,25 @@ import os from 'node:os';
 const defaultOutputDir = process.env.PRYSM_OUTPUT_DIR || 
   path.join(os.homedir(), 'prysm-mcp', 'output');
 
-// Log the default output directory for debugging
+// Get default image output directory - priority:
+// 1. Environment variable PRYSM_IMAGE_OUTPUT_DIR
+// 2. Subdirectory 'images' in the default output directory
+const defaultImageOutputDir = process.env.PRYSM_IMAGE_OUTPUT_DIR || 
+  path.join(defaultOutputDir, 'images');
+
+// Log the default output directories for debugging
 console.debug(`Setting default output directory to: ${defaultOutputDir}`);
+console.debug(`Setting default image output directory to: ${defaultImageOutputDir}`);
 
 // MCP Server configuration
 export const config: ServerConfig = {
   name: 'prysm-mcp-server',
   description: 'Prysm web scraper MCP server for AI assistants',
-  version: '1.0.0',
+  version: '1.1.2',
   model: {
     provider: 'Pink Pixel',
     name: 'Prysm',
-    version: '1.0.0',
+    version: '1.1.2',
   },
   tools: [
     scrapeFocused,
@@ -62,6 +70,7 @@ export const config: ServerConfig = {
     formatResult
   ],
   serverOptions: {
-    defaultOutputDir
+    defaultOutputDir,
+    defaultImageOutputDir
   }
 }; 

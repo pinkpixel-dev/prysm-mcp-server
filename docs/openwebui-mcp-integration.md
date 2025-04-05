@@ -70,27 +70,63 @@ Here's a more comprehensive configuration with multiple options:
 }
 ```
 
-After updating the configuration, restart Open WebUI for the changes to take effect.
+### Custom Configuration
+
+You can create a custom configuration file for the Prysm MCP Server with Open WebUI:
+
+```json
+{
+  "name": "Prysm Web Scraper",
+  "description": "Advanced web scraping capabilities for Open WebUI",
+  "command": "npx",
+  "args": ["-y", "@pinkpixel/prysm-mcp"],
+  "env": {
+    "PRYSM_OUTPUT_DIR": "$HOME/openwebui-scrape-results",
+    "PRYSM_IMAGE_OUTPUT_DIR": "$HOME/openwebui-scrape-results/images"
+  }
+}
+```
+
+For local development:
+
+```json
+{
+  "name": "Prysm Web Scraper (Local)",
+  "description": "Local development version of Prysm web scraper",
+  "command": "node",
+  "args": ["./dist/index.js"],
+  "cwd": "/path/to/local/prysm-mcp",
+  "env": {
+    "PRYSM_OUTPUT_DIR": "$HOME/openwebui-scrape-results",
+    "PRYSM_IMAGE_OUTPUT_DIR": "$HOME/openwebui-scrape-results/images"
+  }
+}
+```
+
+After creating this file, import it through the Open WebUI settings interface.
 
 ## ⚙️ Environment Configuration
 
-You can customize where formatted results are saved by setting the `PRYSM_OUTPUT_DIR` environment variable before starting Open WebUI:
+You can customize where results are saved by setting environment variables before starting Open WebUI:
 
 ```bash
 # Linux/macOS
 export PRYSM_OUTPUT_DIR="/path/to/custom/directory"
+export PRYSM_IMAGE_OUTPUT_DIR="/path/to/custom/image/directory"
 # Then start Open WebUI
 
 # Windows (Command Prompt)
 set PRYSM_OUTPUT_DIR=C:\path\to\custom\directory
+set PRYSM_IMAGE_OUTPUT_DIR=C:\path\to\custom\image\directory
 # Then start Open WebUI
 
 # Windows (PowerShell)
 $env:PRYSM_OUTPUT_DIR="C:\path\to\custom\directory"
+$env:PRYSM_IMAGE_OUTPUT_DIR="C:\path\to\custom\image\directory"
 # Then start Open WebUI
 ```
 
-By default, files will be saved to `~/prysm-mcp/output/`.
+By default, general results will be saved to `~/prysm-mcp/output/` and images to `~/prysm-mcp/output/images/`.
 
 ## 🚀 Available Tools
 

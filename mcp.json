@@ -6,7 +6,11 @@
       "args": [
         "./dist/index.js"
       ],
-      "cwd": "${workspaceFolder}"
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "PRYSM_OUTPUT_DIR": "${workspaceFolder}/scrape_results",
+        "PRYSM_IMAGE_OUTPUT_DIR": "${workspaceFolder}/scrape_results/images"
+      }
     },
     "prysm-scraper-npx": {
       "description": "Use this for the npm published package",
@@ -14,15 +18,34 @@
       "args": [
         "-y",
         "@pinkpixel/prysm-mcp"
-      ]
+      ],
+      "env": {
+        "PRYSM_OUTPUT_DIR": "${workspaceFolder}/scrape_results",
+        "PRYSM_IMAGE_OUTPUT_DIR": "${workspaceFolder}/scrape_results/images"
+      }
     },
     "prysm-scraper-with-output": {
       "description": "Use this to specify a custom output directory",
-      "command": "sh",
+      "command": "npx",
       "args": [
-        "-c",
-        "PRYSM_OUTPUT_DIR=\"${workspaceFolder}/scrape-output\" npx -y @pinkpixel/prysm-mcp"
-      ]
+        "-y",
+        "@pinkpixel/prysm-mcp"
+      ],
+      "env": {
+        "PRYSM_OUTPUT_DIR": "${workspaceFolder}/scrape_results"
+      }
+    },
+    "prysm-scraper-with-both-outputs": {
+      "description": "Use this to specify both output and image output directories",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@pinkpixel/prysm-mcp"
+      ],
+      "env": {
+        "PRYSM_OUTPUT_DIR": "${workspaceFolder}/scrape_results",
+        "PRYSM_IMAGE_OUTPUT_DIR": "${workspaceFolder}/scrape_results/images"
+      }
     }
   }
 } 
