@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/pinkpixel-dev-prysm-mcp-server-badge.png)](https://mseep.ai/app/pinkpixel-dev-prysm-mcp-server)
+
 # 🔍 Prysm MCP Server
 
 The Prysm MCP (Model Context Protocol) Server enables AI assistants like Claude and others to scrape web content with high accuracy and flexibility.
